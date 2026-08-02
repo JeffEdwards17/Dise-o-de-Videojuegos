@@ -3,19 +3,24 @@ using UnityEngine;
 
 public class SimpleInventory : MonoBehaviour
 {
-    private HashSet<string> items = new HashSet<string>();
+    private static HashSet<string> globalItems = new HashSet<string>();
 
     public void AddItem(string itemId)
     {
-        if (!items.Contains(itemId))
+        if (!globalItems.Contains(itemId))
         {
-            items.Add(itemId);
+            globalItems.Add(itemId);
             Debug.Log("Item obtenido: " + itemId);
         }
     }
 
     public bool HasItem(string itemId)
     {
-        return items.Contains(itemId);
+        return globalItems.Contains(itemId);
+    }
+
+    public static void ClearInventory()
+    {
+        globalItems.Clear();
     }
 }

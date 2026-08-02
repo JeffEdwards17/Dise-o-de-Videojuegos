@@ -3,9 +3,15 @@ using UnityEngine;
 
 public class DoorInteractable : MonoBehaviour, IInteractable
 {
+    [Header("Door Settings")]
     public string requiredItemId = "";
     public float openAngle = 90f;
     public float openSpeed = 4f;
+
+    [Header("Messages")]
+    public string lockedMessage = "La puerta está cerrada.";
+    public string openMessage = "";
+    public string objectiveAfterOpen = "";
 
     private bool isOpen;
     private bool isMoving;
@@ -40,7 +46,11 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
             if (inventory == null || !inventory.HasItem(requiredItemId))
             {
-                Debug.Log("La puerta está cerrada. Necesitas: " + requiredItemId);
+                if (GameMessageUI.Instance != null)
+                    GameMessageUI.Instance.ShowMessage(lockedMessage);
+                else
+                    Debug.Log(lockedMessage + " Necesitas: " + requiredItemId);
+
                 return;
             }
         }
@@ -67,5 +77,14 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         transform.localRotation = target;
         isOpen = !isOpen;
         isMoving = false;
+
+        if (isOpen)
+        {
+            if (GameMessageUI.Instance != null && !string.IsNullOrEmpty(openMessage))
+                GameMessageUI.Instance.ShowMessage(openMessage);
+
+            if (ObjectiveManager.Instance != null && !string.IsNullOrEmpty(objectiveAfterOpen))
+                ObjectiveManager.Instance.SetObjective(objectiveAfterOpen);
+        }
     }
 }

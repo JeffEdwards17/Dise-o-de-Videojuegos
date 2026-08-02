@@ -1881,7 +1881,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb95bcd673ec1f14abb9f300851c6267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  primerNivelScene: "Nivel1_Caba\xF1aDelCazador"
+  primerNivelScene: Cabin_Level1
   nuevaPartidaBtn: {fileID: 1716048749}
   continuarBtn: {fileID: 703154891}
   ajustesBtn: {fileID: 906921745}

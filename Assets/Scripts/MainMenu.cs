@@ -58,12 +58,13 @@ public class MainMenu : MonoBehaviour
         return PlayerPrefs.GetInt(SAVE_KEY, 0) == 1;
     }
 
-    private void OnNuevaPartida()
-    {
-        // Al iniciar partida nueva, se reinicia cualquier progreso previo
-        PlayerPrefs.SetInt(SAVE_KEY, 0);
-        CargarEscena(primerNivelScene);
-    }
+ private void OnNuevaPartida()
+{
+    // Al iniciar partida nueva, se reinicia cualquier progreso previo
+    PlayerPrefs.SetInt(SAVE_KEY, 0);
+    SimpleInventory.ClearInventory();
+    CargarEscena(primerNivelScene);
+}
 
     private void OnContinuar()
     {
