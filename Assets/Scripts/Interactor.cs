@@ -23,7 +23,7 @@ public class Interactor : MonoBehaviour
     {
         FindInteractable();
 
-        if (currentInteractable != null && Input.GetKeyDown(KeyCode.E))
+        if (currentInteractable != null && Input.GetKeyDown(KeyCode.E) && !InspectableObject.IsAnyOpen)
         {
             currentInteractable.Interact(player);
         }
@@ -31,6 +31,16 @@ public class Interactor : MonoBehaviour
 
     private void FindInteractable()
     {
+        if (InspectableObject.IsAnyOpen)
+        {
+            currentInteractable = null;
+
+            if (promptText != null)
+                promptText.gameObject.SetActive(false);
+
+            return;
+        }
+
         currentInteractable = null;
 
         if (cameraTransform == null)

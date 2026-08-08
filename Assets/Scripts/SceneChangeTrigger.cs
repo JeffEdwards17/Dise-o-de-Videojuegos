@@ -23,7 +23,7 @@ public class SceneChangeTrigger : MonoBehaviour
                 if (GameMessageUI.Instance != null)
                     GameMessageUI.Instance.ShowMessage(blockedMessage);
                 else
-                    Debug.Log(blockedMessage);
+                    Debug.LogWarning(blockedMessage);
 
                 return;
             }

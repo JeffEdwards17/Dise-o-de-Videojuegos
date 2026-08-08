@@ -12,6 +12,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     public string lockedMessage = "La puerta está cerrada.";
     public string openMessage = "";
     public string objectiveAfterOpen = "";
+    public string taskIdOnOpen = "";
 
     private bool isOpen;
     private bool isMoving;
@@ -49,7 +50,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
                 if (GameMessageUI.Instance != null)
                     GameMessageUI.Instance.ShowMessage(lockedMessage);
                 else
-                    Debug.Log(lockedMessage + " Necesitas: " + requiredItemId);
+                    Debug.LogWarning(lockedMessage + " Necesitas: " + requiredItemId);
 
                 return;
             }
@@ -82,6 +83,14 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         {
             if (GameMessageUI.Instance != null && !string.IsNullOrEmpty(openMessage))
                 GameMessageUI.Instance.ShowMessage(openMessage);
+
+            if (!string.IsNullOrEmpty(taskIdOnOpen))
+            {
+                if (TaskListUI.Instance != null)
+                    TaskListUI.Instance.CompleteTask(taskIdOnOpen);
+                else
+                    Debug.LogWarning("Task completada (sin TaskListUI): " + taskIdOnOpen);
+            }
 
             if (ObjectiveManager.Instance != null && !string.IsNullOrEmpty(objectiveAfterOpen))
                 ObjectiveManager.Instance.SetObjective(objectiveAfterOpen);

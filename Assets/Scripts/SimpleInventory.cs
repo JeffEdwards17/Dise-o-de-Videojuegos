@@ -10,7 +10,6 @@ public class SimpleInventory : MonoBehaviour
         if (!globalItems.Contains(itemId))
         {
             globalItems.Add(itemId);
-            Debug.Log("Item obtenido: " + itemId);
         }
     }
 

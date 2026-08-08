@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
 {
     [Header("Escenas")]
     [Tooltip("Nombre exacto de la escena del primer capítulo (debe estar agregada en Build Settings)")]
-    [SerializeField] private string primerNivelScene = "Nivel1_CabañaDelCazador";
+    [SerializeField] private string primerNivelScene = "Cabin_Level1";
 
     [Header("Botones")]
     [SerializeField] private Button nuevaPartidaBtn;
