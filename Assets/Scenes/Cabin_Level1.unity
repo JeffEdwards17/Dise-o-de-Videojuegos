@@ -1700,6 +1700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3f7668e6c62fe4eb930fbf853f587b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 147078030}
   patrolPoints:
   - {fileID: 90693398}
   - {fileID: 107720759}
@@ -1707,6 +1708,9 @@ MonoBehaviour:
   - {fileID: 445158013}
   patrolWaitTime: 2
   stopAtDistance: 0.5
+  detectionRange: 5
+  viewAngle: 90
+  losePLayerTime: 3
 --- !u!195 &352449382
 NavMeshAgent:
   m_ObjectHideFlags: 0
