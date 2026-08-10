@@ -64,6 +64,12 @@ public static class CabinLevelBuilder
         RunBuild();
     }
 
+    [MenuItem("Nocturia/Cabin_Level1/Build & Repair Level (LEGACY - NO USAR)", true)]
+    public static bool ValidateBuildLevelMenu()
+    {
+        return false;
+    }
+
     [MenuItem("Nocturia/Cabin_Level1/Remove generated objects (NOC_*) - LEGACY")]
     public static void CleanupMenu()
     {
@@ -93,6 +99,12 @@ public static class CabinLevelBuilder
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
         Debug.Log("[CabinBuilder] Objetos NOC_* eliminados. Re-ejecuta 'Build & Repair Level' para regenerarlos.");
+    }
+
+    [MenuItem("Nocturia/Cabin_Level1/Remove generated objects (NOC_*) - LEGACY", true)]
+    public static bool ValidateCleanupMenu()
+    {
+        return false;
     }
 
     public static void RunBuild()

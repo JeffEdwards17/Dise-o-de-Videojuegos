@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public float crouchingHeight = 1.05f;
     public float standingCameraY = 1.6f;
     public float crouchingCameraY = 0.95f;
+    public float crouchTransitionSpeed = 4f;
 
     [Header("Stamina")]
     public float maxStamina = 100f;
@@ -59,6 +60,7 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         currentStamina = maxStamina;
+        mouseSensitivity = PlayerPrefs.GetFloat("SensibilidadFinal", mouseSensitivity);
 
         if (playerCamera == null && Camera.main != null)
             playerCamera = Camera.main.transform;
@@ -67,6 +69,14 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         controller.height = standingHeight;
+        controller.center = new Vector3(0f, standingHeight * 0.5f, 0f);
+
+        if (playerCamera != null)
+        {
+            Vector3 cameraPosition = playerCamera.localPosition;
+            cameraPosition.y = standingCameraY;
+            playerCamera.localPosition = cameraPosition;
+        }
 
         // Si la intro está activa, ella desactiva este componente en su Awake
         // (antes de este Start) y es quien bloquea el cursor. En cualquier otro
@@ -123,12 +133,16 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
 
         bool moving = Mathf.Abs(vertical) > 0.1f || Mathf.Abs(horizontal) > 0.1f;
-        bool crouching = Input.GetKey(KeyCode.LeftControl);
+        bool wantsCrouch = Input.GetKey(crouchKey);
         bool wasCrouched = IsCrouched;
         bool wasExhausted = exhausted;
-        IsCrouched = crouching;
 
-        bool wantsSprint = Input.GetKey(KeyCode.LeftShift) && moving && !crouching;
+        if (wantsCrouch)
+            IsCrouched = true;
+        else if (IsCrouched && CanStand())
+            IsCrouched = false;
+
+        bool wantsSprint = Input.GetKey(KeyCode.LeftShift) && moving && !IsCrouched;
 
         // --- Stamina: correr consume, soltar recupera tras un breve retardo ---
         bool wasSprinting = IsSprinting;
@@ -160,21 +174,23 @@ public class PlayerController : MonoBehaviour
         // Tras agotarse solo se vuelve a correr con al menos un 20% de reserva.
         bool sprinting = wantsSprint && currentStamina > 0f && !exhausted;
 
-        if (crouching)
+        if (IsCrouched)
         {
             controller.height = crouchingHeight;
             controller.center = new Vector3(0f, crouchingHeight * 0.5f, 0f);
         }
-        else if (CanStand())
+        else
         {
             controller.height = standingHeight;
             controller.center = new Vector3(0f, standingHeight * 0.5f, 0f);
         }
 
+        UpdateCrouchCamera();
+
         float speed = walkSpeed;
         if (sprinting)
             speed = runSpeed;
-        else if (crouching)
+        else if (IsCrouched)
             speed = crouchSpeed;
 
         // Penalización temporal por agotamiento: solo mientras se intenta
@@ -252,21 +268,36 @@ public class PlayerController : MonoBehaviour
         if (controller == null)
             return true;
 
-        float grow = standingHeight - controller.height;
-        if (grow <= 0.01f)
+        if (standingHeight <= controller.height + 0.01f)
             return true;
 
-        // El cast parte por encima del borde superior del capsule del propio
-        // CharacterController para no detectarlo a sí mismo, y por seguridad
-        // se ignora un hipotético hit sobre él (era la causa de quedarse
-        // agachado permanentemente tras agacharse).
-        Vector3 origin = transform.position + Vector3.up * (controller.height + controller.radius + 0.05f);
-        RaycastHit hit;
-        if (!Physics.SphereCast(origin, controller.radius, Vector3.up, out hit,
-            grow + 0.15f, ~0, QueryTriggerInteraction.Ignore))
-            return true;
+        // Comprueba el espacio que ocuparía la cápsula al levantarse.
+        float radius = controller.radius * 0.95f;
+        Vector3 bottom = transform.position + Vector3.up * (radius + 0.05f);
+        Vector3 top = transform.position + Vector3.up * (standingHeight - radius);
+        Collider[] hits = Physics.OverlapCapsule(bottom, top, radius, ~0, QueryTriggerInteraction.Ignore);
 
-        return hit.collider == null || hit.collider == controller;
+        foreach (Collider hit in hits)
+        {
+            if (hit != null && hit != controller && !hit.transform.IsChildOf(transform))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void UpdateCrouchCamera()
+    {
+        if (playerCamera == null)
+            return;
+
+        float targetY = IsCrouched ? crouchingCameraY : standingCameraY;
+        Vector3 cameraPosition = playerCamera.localPosition;
+        cameraPosition.y = Mathf.MoveTowards(
+            cameraPosition.y,
+            targetY,
+            crouchTransitionSpeed * Time.deltaTime);
+        playerCamera.localPosition = cameraPosition;
     }
 
     public void SetHidden(bool hidden, Transform hidePoint, float cameraY)

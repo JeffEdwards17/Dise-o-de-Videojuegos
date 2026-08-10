@@ -10,6 +10,12 @@ using UnityEngine;
 public class InspectableObject : MonoBehaviour, IInteractable
 {
     public static bool IsAnyOpen;
+    private static int lastEscapeCloseFrame = -1;
+
+    public static bool ConsumedEscapeThisFrame
+    {
+        get { return lastEscapeCloseFrame == Time.frameCount; }
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()
@@ -17,6 +23,7 @@ public class InspectableObject : MonoBehaviour, IInteractable
         // Asegura que una sesión de Play anterior (con panel abierto) no herede
         // estado bloqueado en la siguiente carga de escena.
         IsAnyOpen = false;
+        lastEscapeCloseFrame = -1;
     }
 
     [Header("Contenido")]
@@ -33,6 +40,10 @@ public class InspectableObject : MonoBehaviour, IInteractable
     public TMP_Text bodyText;
 
     private bool inspected;
+    private PlayerController inspectingPlayer;
+    private Interactor inspectingInteractor;
+    private bool playerWasEnabled;
+    private bool interactorWasEnabled;
 
     public string Prompt
     {
@@ -64,6 +75,16 @@ public class InspectableObject : MonoBehaviour, IInteractable
         inspectPanel.SetActive(true);
         IsAnyOpen = true;
 
+        inspectingPlayer = player;
+        inspectingInteractor = player != null ? player.GetComponent<Interactor>() : null;
+        playerWasEnabled = inspectingPlayer != null && inspectingPlayer.enabled;
+        interactorWasEnabled = inspectingInteractor != null && inspectingInteractor.enabled;
+
+        if (inspectingPlayer != null)
+            inspectingPlayer.enabled = false;
+        if (inspectingInteractor != null)
+            inspectingInteractor.enabled = false;
+
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -90,9 +111,18 @@ public class InspectableObject : MonoBehaviour, IInteractable
 
     private void Update()
     {
-        if (IsAnyOpen && inspectPanel != null && inspectPanel.activeSelf &&
-            (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape)))
+        if (!IsAnyOpen || inspectPanel == null || !inspectPanel.activeSelf)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            lastEscapeCloseFrame = Time.frameCount;
             Close();
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            Close();
+        }
     }
 
     public void Close()
@@ -103,6 +133,12 @@ public class InspectableObject : MonoBehaviour, IInteractable
         IsAnyOpen = false;
 
         Time.timeScale = 1f;
+
+        if (inspectingPlayer != null)
+            inspectingPlayer.enabled = playerWasEnabled;
+        if (inspectingInteractor != null)
+            inspectingInteractor.enabled = interactorWasEnabled;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

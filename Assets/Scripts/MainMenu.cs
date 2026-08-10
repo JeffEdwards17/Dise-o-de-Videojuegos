@@ -29,8 +29,6 @@ public class MainMenu : MonoBehaviour
     [Header("Transición")]
     [SerializeField] private float duracionFade = 1f;
 
-    private const string SAVE_KEY = "NocturiaSaveExists";
-
     private void Awake()
     {
         nuevaPartidaBtn.onClick.AddListener(OnNuevaPartida);
@@ -54,17 +52,15 @@ public class MainMenu : MonoBehaviour
 
     private bool ExisteGuardado()
     {
-        // Reemplazar por tu propio sistema de guardado (JSON, PlayerPrefs, etc.)
-        return PlayerPrefs.GetInt(SAVE_KEY, 0) == 1;
+        // Continue permanece deshabilitado hasta que exista un guardado real.
+        return false;
     }
 
- private void OnNuevaPartida()
-{
-    // Al iniciar partida nueva, se reinicia cualquier progreso previo
-    PlayerPrefs.SetInt(SAVE_KEY, 0);
-    SimpleInventory.ClearInventory();
-    CargarEscena(primerNivelScene);
-}
+    private void OnNuevaPartida()
+    {
+        SimpleInventory.ClearInventory();
+        CargarEscena(primerNivelScene);
+    }
 
     private void OnContinuar()
     {

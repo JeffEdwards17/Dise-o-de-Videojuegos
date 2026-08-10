@@ -14,6 +14,11 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     public string objectiveAfterOpen = "";
     public string taskIdOnOpen = "";
 
+    [Header("Audio")]
+    public AudioClip openClip;
+    public AudioClip closeClip;
+    public AudioClip lockedClip;
+
     private bool isOpen;
     private bool isMoving;
     private Quaternion closedRotation;
@@ -47,6 +52,8 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
             if (inventory == null || !inventory.HasItem(requiredItemId))
             {
+                PlaySound(lockedClip);
+
                 if (GameMessageUI.Instance != null)
                     GameMessageUI.Instance.ShowMessage(lockedMessage);
                 else
@@ -78,6 +85,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         transform.localRotation = target;
         isOpen = !isOpen;
         isMoving = false;
+        PlaySound(isOpen ? openClip : closeClip);
 
         if (isOpen)
         {
@@ -95,5 +103,11 @@ public class DoorInteractable : MonoBehaviour, IInteractable
             if (ObjectiveManager.Instance != null && !string.IsNullOrEmpty(objectiveAfterOpen))
                 ObjectiveManager.Instance.SetObjective(objectiveAfterOpen);
         }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+            AudioSource.PlayClipAtPoint(clip, transform.position, 0.65f);
     }
 }

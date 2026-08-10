@@ -20,6 +20,7 @@ public class SettingsController : MonoBehaviour
     [Header("Control")]
     [SerializeField] private Slider sensibilidadSlider;
     [SerializeField] private Slider brilloSlider;
+    [SerializeField] private Button cerrarButton;
 
     [Header("Brillo (opcional)")]
     [Tooltip("Panel semitransparente encima de la cámara para simular brillo")]
@@ -33,6 +34,14 @@ public class SettingsController : MonoBehaviour
 
     private void OnEnable()
     {
+        if (volumenGeneralSlider == null || musicaSlider == null || efectosSlider == null ||
+            sensibilidadSlider == null || brilloSlider == null)
+        {
+            Debug.LogError("El panel de ajustes necesita sus cinco sliders asignados.", this);
+            enabled = false;
+            return;
+        }
+
         CargarValoresGuardados();
 
         volumenGeneralSlider.onValueChanged.AddListener(SetVolumenGeneral);
@@ -40,6 +49,8 @@ public class SettingsController : MonoBehaviour
         efectosSlider.onValueChanged.AddListener(SetEfectos);
         sensibilidadSlider.onValueChanged.AddListener(SetSensibilidad);
         brilloSlider.onValueChanged.AddListener(SetBrillo);
+        if (cerrarButton != null)
+            cerrarButton.onClick.AddListener(CerrarPanel);
     }
 
     private void OnDisable()
@@ -49,6 +60,8 @@ public class SettingsController : MonoBehaviour
         efectosSlider.onValueChanged.RemoveListener(SetEfectos);
         sensibilidadSlider.onValueChanged.RemoveListener(SetSensibilidad);
         brilloSlider.onValueChanged.RemoveListener(SetBrillo);
+        if (cerrarButton != null)
+            cerrarButton.onClick.RemoveListener(CerrarPanel);
     }
 
     private void CargarValoresGuardados()
@@ -79,19 +92,22 @@ public class SettingsController : MonoBehaviour
 
     public void SetVolumenGeneral(float valor)
     {
-        audioMixer.SetFloat("MasterVolume", LinealADecibeles(valor));
+        if (audioMixer != null)
+            audioMixer.SetFloat("MasterVolume", LinealADecibeles(valor));
         PlayerPrefs.SetFloat(K_VOL, valor);
     }
 
     public void SetMusica(float valor)
     {
-        audioMixer.SetFloat("MusicVolume", LinealADecibeles(valor));
+        if (audioMixer != null)
+            audioMixer.SetFloat("MusicVolume", LinealADecibeles(valor));
         PlayerPrefs.SetFloat(K_MUS, valor);
     }
 
     public void SetEfectos(float valor)
     {
-        audioMixer.SetFloat("SFXVolume", LinealADecibeles(valor));
+        if (audioMixer != null)
+            audioMixer.SetFloat("SFXVolume", LinealADecibeles(valor));
         PlayerPrefs.SetFloat(K_SFX, valor);
     }
 
@@ -112,5 +128,10 @@ public class SettingsController : MonoBehaviour
             // A menor brillo, más oscuro el overlay (máx. 0.6 de opacidad)
             overlayBrillo.alpha = Mathf.Lerp(0.6f, 0f, valor);
         }
+    }
+
+    private void CerrarPanel()
+    {
+        gameObject.SetActive(false);
     }
 }
