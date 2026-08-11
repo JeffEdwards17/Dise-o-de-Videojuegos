@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DoorInteractable : MonoBehaviour, IInteractable
 {
@@ -7,6 +8,17 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     public string requiredItemId = "";
     public float openAngle = 90f;
     public float openSpeed = 4f;
+
+    [Header("Bloqueo por Lente del Tiempo (opcional)")]
+    [Tooltip("Si está activado, la puerta no abre hasta completar las 3 visiones.")]
+    public bool requireAllVisions = false;
+    public string lockedVisionsMessage = "Aún debo entender qué pasó aquí...";
+
+    [Header("Fin de la demo (opcional)")]
+    [Tooltip("Si está activado, después de abrir esta puerta se regresa al Menú Principal.")]
+    public bool returnToMainMenuOnOpen = false;
+    public string mainMenuSceneName = "MainMenu";
+    public float delayBeforeMainMenu = 3f;
 
     [Header("Messages")]
     public string lockedMessage = "La puerta está cerrada.";
@@ -46,6 +58,18 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         if (isMoving)
             return;
 
+        if (requireAllVisions && !VisionsCompleted())
+        {
+            PlaySound(lockedClip);
+
+            if (GameMessageUI.Instance != null)
+                GameMessageUI.Instance.ShowMessage(lockedVisionsMessage);
+            else
+                Debug.LogWarning(lockedVisionsMessage + " (faltan visiones del Lente del Tiempo)");
+
+            return;
+        }
+
         if (!string.IsNullOrEmpty(requiredItemId))
         {
             SimpleInventory inventory = player.GetComponent<SimpleInventory>();
@@ -64,6 +88,17 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         }
 
         StartCoroutine(ToggleDoor());
+    }
+
+    private bool VisionsCompleted()
+    {
+        if (LensManager.Instance == null)
+        {
+            Debug.LogWarning("[DoorInteractable] requireAllVisions está activado pero no hay LensManager en la escena.");
+            return true; 
+        }
+
+        return LensManager.Instance.CurrentCount >= LensManager.Instance.TotalVisions;
     }
 
     private IEnumerator ToggleDoor()
@@ -102,7 +137,16 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
             if (ObjectiveManager.Instance != null && !string.IsNullOrEmpty(objectiveAfterOpen))
                 ObjectiveManager.Instance.SetObjective(objectiveAfterOpen);
+
+            if (returnToMainMenuOnOpen)
+                StartCoroutine(ReturnToMainMenuAfterDelay());
         }
+    }
+
+    private IEnumerator ReturnToMainMenuAfterDelay()
+    {
+        yield return new WaitForSeconds(delayBeforeMainMenu);
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     private void PlaySound(AudioClip clip)
