@@ -4,10 +4,8 @@ using UnityEngine.UI;
  
 public class LensCounterUI : MonoBehaviour
 {
-    [Header("Arrastra aquí un Text (TMP) ya creado en tu Canvas")]
     public TMP_Text counterText;
  
-    [Header("Opcional: ícono del lente")]
     public Image lensIcon;
  
     private bool subscribed = false;

@@ -2,13 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 
-/// <summary>
-/// Controla los sliders del panel de Ajustes (volumen general, música,
-/// efectos de sonido, sensibilidad del ratón y brillo).
-/// Colocar en el GameObject "PanelAjustes".
-/// Requiere un Audio Mixer con los parámetros expuestos:
-/// "MasterVolume", "MusicVolume", "SFXVolume" (en dB, rango -80 a 0).
-/// </summary>
 public class SettingsController : MonoBehaviour
 {
     [Header("Audio")]
@@ -22,7 +15,7 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private Slider brilloSlider;
     [SerializeField] private Button cerrarButton;
 
-    [Header("Brillo (opcional)")]
+    [Header("Brillo")]
     [Tooltip("Panel semitransparente encima de la cámara para simular brillo")]
     [SerializeField] private CanvasGroup overlayBrillo;
 

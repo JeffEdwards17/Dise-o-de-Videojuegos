@@ -14,7 +14,7 @@ public class WispLight : MonoBehaviour
     public float maxIntensity = 1.4f;
     public float flickerSpeed = 3f;
  
-    [Header("Color (opcional, deja en blanco para no tocarlo)")]
+    [Header("Color")]
     public bool overrideColor = true;
     public Color wispColor = new Color(0.4f, 0.85f, 0.7f);
  

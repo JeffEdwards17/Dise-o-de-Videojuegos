@@ -2,10 +2,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>
-/// Controla la pausa del juego y sus botones principales.
-/// El controlador permanece activo mientras el panel visual se oculta o muestra.
-/// </summary>
 public class PauseMenu : MonoBehaviour
 {
     [Header("Referencias")]

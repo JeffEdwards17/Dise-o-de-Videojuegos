@@ -5,11 +5,10 @@ public class LensZone : MonoBehaviour, IInteractable
     [Header("Identidad de esta zona")]
     public string zoneId = "zona_1";
 
-    [Header("Imágenes del recuerdo (arrastra 3-4 sprites, en orden)")]
+    [Header("Imágenes del recuerdo")]
     public Sprite[] visionImages;
 
-    [Header("Grupo de sonidos de esta visión (susurros, gritos, estática...)")]
-    [Tooltip("Cualquier cantidad. Se reproducen en orden durante la visión.")]
+    [Header("Grupo de sonidos de esta visión")]
     public AudioClip[] visionSoundGroup;
 
     [Header("Prompt que ve el jugador")]

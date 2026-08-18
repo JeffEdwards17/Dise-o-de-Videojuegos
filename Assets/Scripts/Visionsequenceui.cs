@@ -6,7 +6,7 @@ public class VisionSequenceUI : MonoBehaviour
 {
     public static VisionSequenceUI Instance;
 
-    [Header("Arrastra aquí un Image a pantalla completa")]
+    [Header("Arrastrar imagen")]
     public Image screenImage;
 
     [Header("Tiempos")]
@@ -24,11 +24,11 @@ public class VisionSequenceUI : MonoBehaviour
     [Range(0f, 1f)] public float musicVolume = 0.6f;
     public float musicFadeOutTime = 0.5f;
 
-    [Header("Efectos de sonido por imagen (susurro, grito, estática...)")]
+    [Header("Efectos de sonido por imagen")]
     public AudioSource sfxSource;
     [Range(0f, 1f)] public float sfxVolume = 0.8f;
 
-    [Header("Movimiento tétrico (temblor + zoom)")]
+    [Header("Movimiento")]
     public bool enableCreepyMotion = true;
     public float shakeAmount = 6f;
     public float shakeSpeed = 4f;

@@ -2,17 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Controla la pantalla principal de Nocturia.
-/// HU-08: Pantalla de inicio
-/// HU-09: Botón de inicio (Nueva partida)
-/// Colocar este script en un GameObject vacío llamado "MainMenuManager"
-/// dentro de la escena "MainMenu".
-/// </summary>
 public class MainMenu : MonoBehaviour
 {
     [Header("Escenas")]
-    [Tooltip("Nombre exacto de la escena del primer capítulo (debe estar agregada en Build Settings)")]
     [SerializeField] private string primerNivelScene = "Cabin_Level1";
 
     [Header("Botones")]
@@ -24,7 +16,7 @@ public class MainMenu : MonoBehaviour
     [Header("Paneles")]
     [SerializeField] private GameObject panelAjustes;
     [SerializeField] private GameObject panelConfirmarSalida;
-    [SerializeField] private CanvasGroup fadeCanvasGroup; // panel negro full screen con CanvasGroup
+    [SerializeField] private CanvasGroup fadeCanvasGroup; 
 
     [Header("Transición")]
     [SerializeField] private float duracionFade = 1f;
@@ -52,7 +44,7 @@ public class MainMenu : MonoBehaviour
 
     private bool ExisteGuardado()
     {
-        // Continue permanece deshabilitado hasta que exista un guardado real.
+        // Continue permanece deshabilitado hasta que exista un guardado real
         return false;
     }
 

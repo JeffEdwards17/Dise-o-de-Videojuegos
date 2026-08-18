@@ -13,7 +13,7 @@ public class PickupItem : MonoBehaviour, IInteractable
 
     public string taskOnPickup = "";
 
-    [Tooltip("Objetos que se desactivan al recoger (ej. barrera de energía).")]
+    [Tooltip("Objetos que se desactivan al recoger")]
     public GameObject[] deactivateOnPickup;
 
     public string Prompt
@@ -44,7 +44,7 @@ public class PickupItem : MonoBehaviour, IInteractable
             if (TaskListUI.Instance != null)
                 TaskListUI.Instance.CompleteTask(taskOnPickup);
             else
-                Debug.LogWarning("Task completada (sin TaskListUI): " + taskOnPickup);
+                Debug.LogWarning("Task completada : " + taskOnPickup);
         }
 
         if (deactivateOnPickup != null)

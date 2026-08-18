@@ -9,8 +9,8 @@ public class WispPathManager : MonoBehaviour
         public GameObject[] wisps;
     }
  
-    [Header("Un grupo por tramo del camino, EN ORDEN")]
-    [Tooltip("paths[0] = camino hacia la 1ra visión. paths[1] = camino hacia la 2da (aparece al completar la 1ra). Y así sucesivamente.")]
+    [Header("Un grupo por tramo del camino")]
+    [Tooltip("paths[0] = camino hacia la 1ra visión. paths[1] = camino hacia la 2da (aparece al completar la 1ra). Y así sucesivamente")]
     public WispGroup[] paths;
  
     private void Start()
